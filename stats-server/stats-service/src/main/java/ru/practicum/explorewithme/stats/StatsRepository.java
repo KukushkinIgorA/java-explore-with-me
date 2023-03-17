@@ -22,6 +22,7 @@ public interface StatsRepository extends JpaRepository<Hit, Integer> {
             "group by hit.app, hit.uri " +
             "order by count(hit.uri) desc")
     List<StatDto> findStatDtoDistinct(LocalDateTime start, LocalDateTime end);
+
     @Query("select new ru.practicum.explorewithme.dto.stats.StatDto (hit.app, hit.uri, count(hit.uri)) from Hit hit " +
             "where hit.uri in (:uris) " +
             "and hit.timestamp >= :start " +

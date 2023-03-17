@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @Slf4j
 @Transactional(readOnly = true)
-public class StatsServiceImpl implements StatsService{
+public class StatsServiceImpl implements StatsService {
 
     private final StatsRepository statsRepository;
 
@@ -31,14 +31,14 @@ public class StatsServiceImpl implements StatsService{
 
     @Override
     public List<StatDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        if(unique) {
-            if(CollectionUtils.isEmpty(uris)) {
+        if (unique) {
+            if (CollectionUtils.isEmpty(uris)) {
                 return statsRepository.findStatDtoDistinct(start, end);
             } else {
                 return statsRepository.findStatDtoByUriIsDistinct(start, end, uris);
             }
         } else {
-            if(CollectionUtils.isEmpty(uris)) {
+            if (CollectionUtils.isEmpty(uris)) {
                 return statsRepository.findStatDto(start, end);
             } else {
                 return statsRepository.findStatDtoByUriIs(start, end, uris);
