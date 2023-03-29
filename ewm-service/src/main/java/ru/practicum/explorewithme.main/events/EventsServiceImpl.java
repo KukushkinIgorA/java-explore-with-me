@@ -90,7 +90,8 @@ public class EventsServiceImpl implements EventsService {
     public EventFullDto updateUserEvent(int userId, int eventId, UpdateEventUserRequestDto updateEventUserRequestDto) {
         Event event = getValidEvent(eventId, userId);
         if (event.getState().equals(EventStatus.PUBLISHED)) {
-            throw new ConflictException(String.format("нельзя редактировать события в статусе %s", EventStatus.PUBLISHED));
+            throw new ConflictException(String.format("нельзя редактировать события в статусе %s",
+                    EventStatus.PUBLISHED));
         }
         Category category = null;
         if (updateEventUserRequestDto.getEventDate() != null) {
