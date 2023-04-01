@@ -47,7 +47,7 @@ public class CompilationsServiceImpl implements CompilationsService {
         if (!CollectionUtils.isEmpty(newCompilationDto.getEvents())) {
             events = eventsRepository.findAllById(newCompilationDto.getEvents());
             for (Event event : events) {
-                event.setCompilation(compilation);
+                event.setCompilation(List.of(compilation));
             }
         }
         return CompilationsMapper.toCompilationDto(compilation, events);
@@ -62,7 +62,7 @@ public class CompilationsServiceImpl implements CompilationsService {
         if (!CollectionUtils.isEmpty(updateCompilationDto.getEvents())) {
             events = eventsRepository.findAllById(updateCompilationDto.getEvents());
             for (Event event : events) {
-                event.setCompilation(compilation);
+                event.setCompilation(List.of(compilation));
             }
         }
         return CompilationsMapper.toCompilationDto(compilation, events);
@@ -75,10 +75,10 @@ public class CompilationsServiceImpl implements CompilationsService {
     }
 
     @Override
-    public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
+    public List<CompilationDto> getCompilations(boolean pinned, int from, int size) {
         List<Compilation> compilations;
-        if (pinned != null) {
-            compilations = compilationsRepository.findCompilationByPinned(pinned, PageRequest.of(from / size, size));
+        if (pinned) {
+            compilations = compilationsRepository.findCompilationByPinned(true, PageRequest.of(from / size, size));
         } else {
             compilations = compilationsRepository.findAll(PageRequest.of(from / size, size)).toList();
         }

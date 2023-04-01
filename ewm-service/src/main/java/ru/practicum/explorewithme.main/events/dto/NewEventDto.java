@@ -20,31 +20,31 @@ public class NewEventDto {
     @NotBlank
     @Size(min = 20, message = "{event.annotation.size.to.short}")
     @Size(max = 2000, message = "{event.annotation.size.to.long}")
-    String annotation;
+    private String annotation;
 
     @NotNull
-    Integer category;
+    private Integer category;
 
     @NotBlank
     @Size(min = 20, message = "{event.description.size.to.short}")
     @Size(max = 7000, message = "{event.description.size.to.long}")
-    String description;
+    private String description;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull
     private LocalDateTime eventDate;
 
     @NotNull
-    Location location;
+    private Location location;
 
-    Boolean paid;
+    private Boolean paid;
 
-    Integer participantLimit;
+    private Integer participantLimit;
 
-    Boolean requestModeration;
+    private Boolean requestModeration;
 
     @NotBlank
     @Size(min = 3, message = "{event.title.size.to.short}")
     @Size(max = 120, message = "{event.title.size.to.long}")
-    String title;
+    private String title;
 }

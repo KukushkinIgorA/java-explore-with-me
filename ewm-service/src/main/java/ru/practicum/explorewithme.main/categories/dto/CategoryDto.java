@@ -12,8 +12,8 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode
 @ToString
 public class CategoryDto {
-    int id;
+    private int id;
 
     @NotBlank
-    String name;
+    private String name;
 }

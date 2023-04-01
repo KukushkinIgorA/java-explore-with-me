@@ -10,6 +10,6 @@ import lombok.*;
 @EqualsAndHashCode
 @ToString
 public class UserShortDto {
-    int id;
-    String name;
+    private int id;
+    private String name;
 }

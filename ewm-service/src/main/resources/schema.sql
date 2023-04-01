@@ -61,10 +61,17 @@ create table if not exists events
     request_moderation boolean default true,
     state              varchar(16)                 not null,
     title              varchar(120)                not null,
-    views              integer default 0,
+    views              integer default 0
+);
+
+create table if not exists events_compilations
+(
+    event_id       integer
+    constraint events_null_fk
+    references events (event_id),
     compilation_id       integer
-        constraint events_compilations_null_fk
-        references compilations (compilation_id)
+    constraint compilations_null_fk
+    references compilations (compilation_id)
 );
 
 create table if not exists requests

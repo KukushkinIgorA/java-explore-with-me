@@ -1,8 +1,11 @@
 package ru.practicum.explorewithme.stats.stats;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.explorewithme.dto.HitDto;
 import ru.practicum.explorewithme.stats.stats.model.Hit;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class StatsMapper {
     public static HitDto toHitDto(Hit hit) {
         return HitDto.builder()

@@ -35,9 +35,9 @@ public class PrivateEventsController {
     @GetMapping("{userId}/events")
     public List<EventShortDto> getUserEvents(@PathVariable("userId") int userId,
                                              @PositiveOrZero @RequestParam(name = "from",
-                                                     required = false, defaultValue = DEFAULT_START_INDEX) int from,
+                                                     defaultValue = DEFAULT_START_INDEX) int from,
                                              @Positive @RequestParam(name = "size",
-                                                     required = false, defaultValue = DEFAULT_PAGE_SIZE) int size) {
+                                                     defaultValue = DEFAULT_PAGE_SIZE) int size) {
         log.info("Запрос событий добавленных текущим пользователем {}", userId);
         return eventsService.getUserEvents(userId, from, size);
     }

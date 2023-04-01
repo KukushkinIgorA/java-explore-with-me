@@ -43,9 +43,9 @@ public class PublicEventsController {
                                                      @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
                                                      @RequestParam(name = "sort", defaultValue = "EVENT_DATE") String eventSortString,
                                                      @PositiveOrZero @RequestParam(name = "from",
-                                                             required = false, defaultValue = DEFAULT_START_INDEX) int from,
+                                                             defaultValue = DEFAULT_START_INDEX) int from,
                                                      @Positive @RequestParam(name = "size",
-                                                             required = false, defaultValue = DEFAULT_PAGE_SIZE) int size,
+                                                             defaultValue = DEFAULT_PAGE_SIZE) int size,
                                                      HttpServletRequest httpServletRequest) {
         log.info("Запрос событий по публичному фильтру");
         EventSort eventSort = checkEventSort(eventSortString);

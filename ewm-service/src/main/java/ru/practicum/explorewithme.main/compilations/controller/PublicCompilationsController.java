@@ -30,11 +30,11 @@ public class PublicCompilationsController {
     }
 
     @GetMapping()
-    public List<CompilationDto> getCompilations(@RequestParam(name = "pinned", required = false) Boolean pinned,
+    public List<CompilationDto> getCompilations(@RequestParam(name = "pinned", required = false) boolean pinned,
                                                 @PositiveOrZero @RequestParam(name = "from",
-                                                        required = false, defaultValue = DEFAULT_START_INDEX) int from,
+                                                        defaultValue = DEFAULT_START_INDEX) int from,
                                                 @Positive @RequestParam(name = "size",
-                                                        required = false, defaultValue = DEFAULT_PAGE_SIZE) int size) {
+                                                        defaultValue = DEFAULT_PAGE_SIZE) int size) {
         log.info("Запрос на поиск подборок подборок событий по параметрам");
         return compilationsService.getCompilations(pinned, from, size);
     }

@@ -13,11 +13,11 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 public class CompilationDto {
-    int id;
+    private int id;
 
-    List<EventShortDto> events;
+    private List<EventShortDto> events;
 
-    Boolean pinned;
+    private boolean pinned;
 
-    String title;
+    private String title;
 }

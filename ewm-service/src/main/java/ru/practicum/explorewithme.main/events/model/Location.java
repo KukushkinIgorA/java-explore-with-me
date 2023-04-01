@@ -18,11 +18,11 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "location_id")
     @JsonIgnore
-    int id;
+    private int id;
 
     @Column(name = "lat", nullable = false)
-    Float lat;
+    private Float lat;
 
     @Column(name = "lon", nullable = false)
-    Float lon;
+    private Float lon;
 }

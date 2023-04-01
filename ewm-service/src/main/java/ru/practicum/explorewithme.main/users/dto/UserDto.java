@@ -12,11 +12,11 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode
 @ToString
 public class UserDto {
-    int id;
+    private int id;
 
     @NotBlank
-    String email;
+    private String email;
 
     @NotBlank
-    String name;
+    private String name;
 }

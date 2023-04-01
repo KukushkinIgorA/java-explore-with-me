@@ -19,27 +19,27 @@ public class UpdateEventUserRequestDto {
 
     @Size(min = 20, message = "{event.annotation.size.to.short}")
     @Size(max = 2000, message = "{event.annotation.size.to.long}")
-    String annotation;
-    Integer category;
+    private String annotation;
+    private Integer category;
 
     @Size(min = 20, message = "{event.description.size.to.short}")
     @Size(max = 7000, message = "{event.description.size.to.long}")
-    String description;
+    private String description;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
-    Location location;
+    private Location location;
 
-    Boolean paid;
+    private Boolean paid;
 
-    Integer participantLimit;
+    private Integer participantLimit;
 
-    Boolean requestModeration;
+    private Boolean requestModeration;
 
-    EventStateAction stateAction;
+    private EventStateAction stateAction;
 
     @Size(min = 3, message = "{event.title.size.to.short}")
     @Size(max = 120, message = "{event.title.size.to.long}")
-    String title;
+    private String title;
 }

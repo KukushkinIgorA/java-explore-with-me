@@ -1,5 +1,7 @@
 package ru.practicum.explorewithme.main.events;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.explorewithme.main.categories.CategoriesMapper;
 import ru.practicum.explorewithme.main.categories.model.Category;
 import ru.practicum.explorewithme.main.dictionary.EventStateAction;
@@ -13,6 +15,7 @@ import ru.practicum.explorewithme.main.exception.ForbiddenException;
 import ru.practicum.explorewithme.main.users.UsersMapper;
 import ru.practicum.explorewithme.main.users.model.User;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventsMapper {
     public static EventShortDto toEventShortDto(Event event) {
         return EventShortDto.builder()

@@ -13,6 +13,6 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 public class EventRequestStatusUpdateRequest {
-    List<Integer> requestIds;
-    ParticipationRequestStatus status;
+    private List<Integer> requestIds;
+    private ParticipationRequestStatus status;
 }

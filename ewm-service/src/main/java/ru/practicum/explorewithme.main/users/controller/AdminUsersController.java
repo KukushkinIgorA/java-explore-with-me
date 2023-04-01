@@ -34,9 +34,9 @@ public class AdminUsersController {
     @GetMapping()
     public List<UserDto> getUsers(@RequestParam(name = "ids", required = false) List<Integer> ids,
                                   @PositiveOrZero @RequestParam(name = "from",
-                                          required = false, defaultValue = DEFAULT_START_INDEX) int from,
+                                          defaultValue = DEFAULT_START_INDEX) int from,
                                   @Positive @RequestParam(name = "size",
-                                          required = false, defaultValue = DEFAULT_PAGE_SIZE) int size) {
+                                          defaultValue = DEFAULT_PAGE_SIZE) int size) {
         log.info("Запрос пользователей");
         return usersService.getUsers(ids, from, size);
     }

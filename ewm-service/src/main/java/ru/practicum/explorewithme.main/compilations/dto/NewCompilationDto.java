@@ -13,10 +13,10 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 public class NewCompilationDto {
-    List<Integer> events;
+    private List<Integer> events;
 
-    Boolean pinned;
+    private boolean pinned;
 
     @NotBlank
-    String title;
+    private String title;
 }

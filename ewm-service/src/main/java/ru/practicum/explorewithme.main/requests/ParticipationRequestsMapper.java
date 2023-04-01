@@ -1,11 +1,14 @@
 package ru.practicum.explorewithme.main.requests;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import ru.practicum.explorewithme.main.dictionary.ParticipationRequestStatus;
 import ru.practicum.explorewithme.main.events.model.Event;
 import ru.practicum.explorewithme.main.requests.dto.ParticipationRequestDto;
 import ru.practicum.explorewithme.main.requests.model.ParticipationRequest;
 import ru.practicum.explorewithme.main.users.model.User;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParticipationRequestsMapper {
     public static ParticipationRequestDto toParticipationRequestDto(ParticipationRequest participationRequest) {
         return ParticipationRequestDto.builder()

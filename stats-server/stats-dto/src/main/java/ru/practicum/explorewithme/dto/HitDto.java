@@ -15,16 +15,16 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @ToString
 public class HitDto {
-    int id;
+    private int id;
 
     @NotBlank
-    String app;
+    private String app;
 
     @NotBlank
-    String uri;
+    private String uri;
 
     @NotBlank
-    String ip;
+    private String ip;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull

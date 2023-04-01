@@ -26,7 +26,7 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "event_id")
-    int id;
+    private int id;
 
     @CreationTimestamp
     @Column(name = "created", nullable = false)
@@ -84,7 +84,11 @@ public class Event {
     @Column(name = "views")
     private int views;
 
-    @ManyToOne
-    @JoinColumn(name = "compilation_id")
-    private Compilation compilation;
+    @ManyToMany
+    @JoinTable(
+            name = "events_compilations",
+            joinColumns = {@JoinColumn(name = "event_id")},
+            inverseJoinColumns = {@JoinColumn(name = "compilation_id")}
+    )
+    private List<Compilation> compilation;
 }

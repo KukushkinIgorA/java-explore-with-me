@@ -44,9 +44,9 @@ public class AdminEventsController {
                                                     @RequestParam(name = "rangeStart", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                                     @RequestParam(name = "rangeEnd", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                                     @PositiveOrZero @RequestParam(name = "from",
-                                                            required = false, defaultValue = DEFAULT_START_INDEX) int from,
+                                                            defaultValue = DEFAULT_START_INDEX) int from,
                                                     @Positive @RequestParam(name = "size",
-                                                            required = false, defaultValue = DEFAULT_PAGE_SIZE) int size) {
+                                                            defaultValue = DEFAULT_PAGE_SIZE) int size) {
         log.info("Запрос событий по админскому фильтру");
         List<EventStatus> eventStatuses = new ArrayList<>();
         if (!CollectionUtils.isEmpty(states)) {

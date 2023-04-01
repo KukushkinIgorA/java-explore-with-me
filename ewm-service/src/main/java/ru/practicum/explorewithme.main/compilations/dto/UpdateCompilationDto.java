@@ -12,9 +12,9 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 public class UpdateCompilationDto {
-    List<Integer> events;
+    private List<Integer> events;
 
-    Boolean pinned;
+    private boolean pinned;
 
-    String title;
+    private String title;
 }
