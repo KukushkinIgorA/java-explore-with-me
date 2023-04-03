@@ -21,7 +21,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +37,12 @@ public class Event {
     @Column(name = "annotation", nullable = false, length = 2000)
     private String annotation;
 
-    @OneToMany()
+    @OneToMany(fetch = FetchType.LAZY)
     @Where(clause = "state = '2'")
     @JoinColumn(name = "event_id")
     private List<ParticipationRequest> confirmedRequests;
 
-    @OneToMany()
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
     private List<ParticipationRequest> participationRequests;
 
@@ -72,7 +71,7 @@ public class Event {
     private int participantLimit;
 
     @Column(name = "request_moderation")
-    private Boolean requestModeration;
+    private boolean requestModeration;
 
     @Column(name = "state", nullable = false, length = 16)
     @Convert(converter = EventStatusConverter.class)
@@ -80,9 +79,6 @@ public class Event {
 
     @Column(name = "title", nullable = false, length = 120)
     private String title;
-
-    @Column(name = "views")
-    private int views;
 
     @ManyToMany
     @JoinTable(

@@ -1,7 +1,7 @@
 package ru.practicum.explorewithme.main.compilations;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,13 +13,16 @@ import ru.practicum.explorewithme.main.compilations.model.Compilation;
 import ru.practicum.explorewithme.main.events.model.Event;
 import ru.practicum.explorewithme.main.events.repository.EventsRepository;
 import ru.practicum.explorewithme.main.exception.NotFoundException;
+import ru.practicum.explorewithme.main.stats.StatsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CompilationsServiceImpl implements CompilationsService {
 
@@ -27,11 +30,7 @@ public class CompilationsServiceImpl implements CompilationsService {
 
     private final EventsRepository eventsRepository;
 
-    @Autowired
-    public CompilationsServiceImpl(CompilationsRepository compilationsRepository, EventsRepository eventsRepository) {
-        this.compilationsRepository = compilationsRepository;
-        this.eventsRepository = eventsRepository;
-    }
+    private final StatsService statsService;
 
     @Override
     @Transactional
@@ -50,7 +49,8 @@ public class CompilationsServiceImpl implements CompilationsService {
                 event.setCompilation(List.of(compilation));
             }
         }
-        return CompilationsMapper.toCompilationDto(compilation, events);
+        Map<Integer, Integer> eventViews = statsService.getEventViews(events);
+        return CompilationsMapper.toCompilationDto(compilation, events, eventViews);
     }
 
     @Override
@@ -65,13 +65,15 @@ public class CompilationsServiceImpl implements CompilationsService {
                 event.setCompilation(List.of(compilation));
             }
         }
-        return CompilationsMapper.toCompilationDto(compilation, events);
+        Map<Integer, Integer> eventViews = statsService.getEventViews(events);
+        return CompilationsMapper.toCompilationDto(compilation, events, eventViews);
     }
 
     @Override
     public CompilationDto getCompilation(int compilationId) {
         Compilation compilation = getValidCompilation(compilationId);
-        return CompilationsMapper.toCompilationDto(compilation, compilation.getEvents());
+        Map<Integer, Integer> eventViews = statsService.getEventViews(compilation.getEvents());
+        return CompilationsMapper.toCompilationDto(compilation, compilation.getEvents(), eventViews);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class CompilationsServiceImpl implements CompilationsService {
         }
 
         return compilations.stream()
-                .map(compilation -> CompilationsMapper.toCompilationDto(compilation, compilation.getEvents()))
+                .map(compilation -> CompilationsMapper.toCompilationDto(compilation, compilation.getEvents(), statsService.getEventViews(compilation.getEvents())))
                 .collect(Collectors.toList());
     }
 

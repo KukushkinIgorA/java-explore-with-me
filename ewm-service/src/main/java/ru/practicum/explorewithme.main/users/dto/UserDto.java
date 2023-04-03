@@ -2,6 +2,7 @@ package ru.practicum.explorewithme.main.users.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -9,12 +10,11 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode
-@ToString
 public class UserDto {
     private int id;
 
     @NotBlank
+    @Email
     private String email;
 
     @NotBlank

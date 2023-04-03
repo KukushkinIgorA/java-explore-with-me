@@ -1,8 +1,7 @@
 package ru.practicum.explorewithme.main.categories.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.main.categories.CategoriesService;
 import ru.practicum.explorewithme.main.categories.dto.CategoryDto;
@@ -19,15 +18,10 @@ import static ru.practicum.explorewithme.main.param.PaginationParam.DEFAULT_STAR
  */
 @RestController
 @RequestMapping(path = "/categories")
+@RequiredArgsConstructor
 @Slf4j
-@Validated
 public class PublicCategoriesController {
     private final CategoriesService categoriesService;
-
-    @Autowired
-    public PublicCategoriesController(CategoriesService categoriesService) {
-        this.categoriesService = categoriesService;
-    }
 
     @GetMapping()
     public List<CategoryDto> getCategories(@PositiveOrZero @RequestParam(name = "from",

@@ -1,10 +1,9 @@
 package ru.practicum.explorewithme.main.events.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.CollectionUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.main.dictionary.EventSort;
 import ru.practicum.explorewithme.main.dictionary.EventStatus;
@@ -27,15 +26,10 @@ import static ru.practicum.explorewithme.main.param.PaginationParam.DEFAULT_STAR
  */
 @RestController
 @RequestMapping(path = "/admin/events")
+@RequiredArgsConstructor
 @Slf4j
-@Validated
 public class AdminEventsController {
     private final EventsService eventsService;
-
-    @Autowired
-    public AdminEventsController(EventsService eventsService) {
-        this.eventsService = eventsService;
-    }
 
     @GetMapping()
     public List<EventFullDto> getEventsPublicFilter(@RequestParam(name = "users", required = false) List<Integer> users,

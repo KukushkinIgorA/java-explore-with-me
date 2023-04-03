@@ -1,9 +1,8 @@
 package ru.practicum.explorewithme.main.compilations.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.main.compilations.CompilationsService;
 import ru.practicum.explorewithme.main.compilations.dto.CompilationDto;
@@ -17,15 +16,10 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping(path = "/admin/compilations")
+@RequiredArgsConstructor
 @Slf4j
-@Validated
 public class AdminCompilationsController {
     private final CompilationsService compilationsService;
-
-    @Autowired
-    public AdminCompilationsController(CompilationsService compilationsService) {
-        this.compilationsService = compilationsService;
-    }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)

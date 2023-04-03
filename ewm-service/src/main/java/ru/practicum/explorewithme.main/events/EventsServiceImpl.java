@@ -1,7 +1,7 @@
 package ru.practicum.explorewithme.main.events;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +13,7 @@ import ru.practicum.explorewithme.main.dictionary.EventStatus;
 import ru.practicum.explorewithme.main.dictionary.ParticipationRequestStatus;
 import ru.practicum.explorewithme.main.events.dto.*;
 import ru.practicum.explorewithme.main.events.model.Event;
+import ru.practicum.explorewithme.main.events.model.Location;
 import ru.practicum.explorewithme.main.events.repository.EventsRepository;
 import ru.practicum.explorewithme.main.events.repository.LocationRepository;
 import ru.practicum.explorewithme.main.exception.ConflictException;
@@ -29,10 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class EventsServiceImpl implements EventsService {
 
@@ -43,21 +46,12 @@ public class EventsServiceImpl implements EventsService {
     private final ParticipationRequestsRepository participationRequestsRepository;
     private final StatsService statsService;
 
-    @Autowired
-    public EventsServiceImpl(EventsRepository eventsRepository, LocationRepository locationRepository, UsersService usersService, CategoriesService categoriesService, ParticipationRequestsRepository participationRequestsRepository, StatsService statsService) {
-        this.eventsRepository = eventsRepository;
-        this.locationRepository = locationRepository;
-        this.usersService = usersService;
-        this.categoriesService = categoriesService;
-        this.participationRequestsRepository = participationRequestsRepository;
-        this.statsService = statsService;
-    }
-
     @Override
     public List<EventShortDto> getUserEvents(int userId, int from, int size) {
         usersService.getValidUser(userId);
-        return eventsRepository.findEventByInitiator_Id(userId, PageRequest.of(from / size, size))
-                .stream().map(EventsMapper::toEventShortDto).collect(Collectors.toList());
+        List<Event> events = eventsRepository.findEventByInitiator_Id(userId, PageRequest.of(from / size, size));
+        Map<Integer, Integer> eventViews = statsService.getEventViews(events);
+        return events.stream().map(event -> EventsMapper.toEventShortDto(event, eventViews)).collect(Collectors.toList());
     }
 
     @Override
@@ -66,13 +60,17 @@ public class EventsServiceImpl implements EventsService {
         User user = usersService.getValidUser(userId);
         Category category = categoriesService.getValidCategory(newEventDto.getCategory());
         validate(newEventDto.getEventDate());
-        locationRepository.save(newEventDto.getLocation());
-        return EventsMapper.toEventFullDto(eventsRepository.save(EventsMapper.toEvent(newEventDto, category, user)));
+        Location location = locationRepository.save(LocationMapper.toLocation(newEventDto.getLocation()));
+        Event event = eventsRepository.save(EventsMapper.toEvent(newEventDto, category, user, location));
+        Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
+        return EventsMapper.toEventFullDto(event, eventViews);
     }
 
     @Override
     public EventFullDto getUserEvent(int userId, int eventId) {
-        return EventsMapper.toEventFullDto(getValidEvent(eventId, userId));
+        Event event = getValidEvent(eventId, userId);
+        Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
+        return EventsMapper.toEventFullDto(event, eventViews);
     }
 
     @Override
@@ -82,7 +80,8 @@ public class EventsServiceImpl implements EventsService {
             throw new NotFoundException(String.format("на сервере отстутствует событие c id = %s", eventId));
         }
         statsService.addHit(httpServletRequest);
-        return EventsMapper.toEventFullDto(event);
+        Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
+        return EventsMapper.toEventFullDto(event, eventViews);
     }
 
     @Override
@@ -94,6 +93,7 @@ public class EventsServiceImpl implements EventsService {
                     EventStatus.PUBLISHED));
         }
         Category category = null;
+        Location location = null;
         if (updateEventUserRequestDto.getEventDate() != null) {
             validate(updateEventUserRequestDto.getEventDate());
         }
@@ -101,10 +101,11 @@ public class EventsServiceImpl implements EventsService {
             category = categoriesService.getValidCategory(updateEventUserRequestDto.getCategory());
         }
         if (updateEventUserRequestDto.getLocation() != null) {
-            locationRepository.save(updateEventUserRequestDto.getLocation());
+            location = locationRepository.save(LocationMapper.toLocation(updateEventUserRequestDto.getLocation()));
         }
-        EventsMapper.toUpdateUserEvent(updateEventUserRequestDto, category, event);
-        return EventsMapper.toEventFullDto(event);
+        EventsMapper.toUpdateUserEvent(updateEventUserRequestDto, category, event, location);
+        Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
+        return EventsMapper.toEventFullDto(event, eventViews);
     }
 
     @Override
@@ -115,6 +116,7 @@ public class EventsServiceImpl implements EventsService {
             throw new ConflictException(String.format("нельзя публиковать события в статусе отличном от %s", EventStatus.PENDING));
         }
         Category category = null;
+        Location location = null;
         if (updateEventUserRequestDto.getEventDate() != null) {
             validate(updateEventUserRequestDto.getEventDate());
         }
@@ -122,10 +124,11 @@ public class EventsServiceImpl implements EventsService {
             category = categoriesService.getValidCategory(updateEventUserRequestDto.getCategory());
         }
         if (updateEventUserRequestDto.getLocation() != null) {
-            locationRepository.save(updateEventUserRequestDto.getLocation());
+            location = locationRepository.save(LocationMapper.toLocation(updateEventUserRequestDto.getLocation()));
         }
-        EventsMapper.toUpdateAdminEvent(updateEventUserRequestDto, category, event);
-        return EventsMapper.toEventFullDto(event);
+        EventsMapper.toUpdateAdminEvent(updateEventUserRequestDto, category, event, location);
+        Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
+        return EventsMapper.toEventFullDto(event, eventViews);
     }
 
 
@@ -136,13 +139,15 @@ public class EventsServiceImpl implements EventsService {
             events = events.stream().filter(event -> (event.getParticipantLimit() == 0 || event.getConfirmedRequests().size() < event.getParticipantLimit())).collect(Collectors.toList());
         }
         statsService.addHit(httpServletRequest);
-        return events.stream().map(EventsMapper::toEventShortDto).collect(Collectors.toList());
+        Map<Integer, Integer> eventViews = statsService.getEventViews(events);
+        return events.stream().map(event -> EventsMapper.toEventShortDto(event, eventViews)).collect(Collectors.toList());
     }
 
     @Override
     public List<EventFullDto> getEventsAdminFilter(List<Integer> users, List<EventStatus> eventStatuses, List<Integer> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
-        return eventsRepository.findEventsAdminFilter(users, eventStatuses, categories, rangeStart, rangeEnd, from, size)
-                .stream().map(EventsMapper::toEventFullDto).collect(Collectors.toList());
+        List<Event> events = eventsRepository.findEventsAdminFilter(users, eventStatuses, categories, rangeStart, rangeEnd, from, size);
+        Map<Integer, Integer> eventViews = statsService.getEventViews(events);
+        return events.stream().map(event -> EventsMapper.toEventFullDto(event, eventViews)).collect(Collectors.toList());
     }
 
 
@@ -164,13 +169,13 @@ public class EventsServiceImpl implements EventsService {
     @Transactional
     public EventRequestStatusUpdateResult changeEventParticipationRequestStatus(int userId, int eventId, EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
         Event event = getValidEvent(eventId, userId);
-        Boolean requestModeration = event.getRequestModeration();
+        boolean requestModeration = event.isRequestModeration();
         int confirmedRequests = event.getConfirmedRequests().size();
         int participantLimit = event.getParticipantLimit();
         List<ParticipationRequest> participationRequests = participationRequestsRepository.findParticipationRequestByEvent_IdAndState(eventId, ParticipationRequestStatus.PENDING);
         List<ParticipationRequest> participationRequestsConfirmed = new ArrayList<>();
         List<ParticipationRequest> participationRequestsRejected = new ArrayList<>();
-        if (eventRequestStatusUpdateRequest.getStatus().equals(ParticipationRequestStatus.CONFIRMED) && requestModeration.equals(true)) {
+        if (eventRequestStatusUpdateRequest.getStatus().equals(ParticipationRequestStatus.CONFIRMED) && requestModeration) {
             for (ParticipationRequest participationRequest : participationRequests) {
                 if (confirmedRequests < participantLimit || participantLimit == 0) {
                     participationRequest.setState(ParticipationRequestStatus.CONFIRMED);

@@ -1,4 +1,4 @@
-drop table if exists users, categories, events, locations, requests, compilations;
+drop table if exists users, categories, events, locations, requests, compilations, events_compilations;
 
 create table if not exists users
 (
@@ -60,8 +60,7 @@ create table if not exists events
     participant_limit  integer default 0,
     request_moderation boolean default true,
     state              varchar(16)                 not null,
-    title              varchar(120)                not null,
-    views              integer default 0
+    title              varchar(120)                not null
 );
 
 create table if not exists events_compilations

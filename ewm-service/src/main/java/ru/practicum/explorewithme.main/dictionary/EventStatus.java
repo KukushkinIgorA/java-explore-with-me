@@ -15,7 +15,7 @@ public enum EventStatus {
 
     public static Optional<EventStatus> from(String eventStatusString) {
         for (EventStatus value : EventStatus.values()) {
-            if (value.name().equals(eventStatusString)) {
+            if (value.name().equalsIgnoreCase(eventStatusString)) {
                 return Optional.of(value);
             }
         }

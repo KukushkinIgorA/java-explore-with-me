@@ -1,6 +1,6 @@
 package ru.practicum.explorewithme.main.events.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 import ru.practicum.explorewithme.main.dictionary.EventSort;
@@ -17,14 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class EventsRepositoryCustomImpl implements EventsRepositoryCustom {
 
-    EntityManager em;
-
-    @Autowired
-    public EventsRepositoryCustomImpl(EntityManager em) {
-        this.em = em;
-    }
+    private final EntityManager em;
 
     @Override
     public List<Event> findEventsPublicFilter(String text,

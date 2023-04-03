@@ -24,7 +24,7 @@ public class ParticipationRequestsMapper {
         return ParticipationRequest.builder()
                 .event(event)
                 .requester(user)
-                .state(event.getRequestModeration().equals(true) ? ParticipationRequestStatus.PENDING : ParticipationRequestStatus.CONFIRMED)
+                .state(event.isRequestModeration() ? ParticipationRequestStatus.PENDING : ParticipationRequestStatus.CONFIRMED)
                 .build();
     }
 }

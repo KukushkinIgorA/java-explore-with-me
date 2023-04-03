@@ -1,8 +1,7 @@
 package ru.practicum.explorewithme.main.compilations.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.main.compilations.CompilationsService;
 import ru.practicum.explorewithme.main.compilations.dto.CompilationDto;
@@ -19,15 +18,10 @@ import static ru.practicum.explorewithme.main.param.PaginationParam.DEFAULT_STAR
  */
 @RestController
 @RequestMapping(path = "/compilations")
+@RequiredArgsConstructor
 @Slf4j
-@Validated
 public class PublicCompilationsController {
     private final CompilationsService compilationsService;
-
-    @Autowired
-    public PublicCompilationsController(CompilationsService compilationsService) {
-        this.compilationsService = compilationsService;
-    }
 
     @GetMapping()
     public List<CompilationDto> getCompilations(@RequestParam(name = "pinned", required = false) boolean pinned,

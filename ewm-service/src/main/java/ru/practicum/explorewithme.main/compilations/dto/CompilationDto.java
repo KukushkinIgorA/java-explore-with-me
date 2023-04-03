@@ -3,6 +3,7 @@ package ru.practicum.explorewithme.main.compilations.dto;
 import lombok.*;
 import ru.practicum.explorewithme.main.events.dto.EventShortDto;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -10,8 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode
-@ToString
 public class CompilationDto {
     private int id;
 
@@ -19,5 +18,6 @@ public class CompilationDto {
 
     private boolean pinned;
 
+    @Size(max = 120, message = "{compilation.title.size.to.long}")
     private String title;
 }

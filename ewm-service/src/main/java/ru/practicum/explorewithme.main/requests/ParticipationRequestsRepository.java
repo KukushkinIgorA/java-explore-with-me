@@ -12,5 +12,4 @@ public interface ParticipationRequestsRepository extends JpaRepository<Participa
     List<ParticipationRequest> findParticipationRequestByRequester_Id(int userId);
 
     List<ParticipationRequest> findParticipationRequestByEvent_IdAndState(int eventId, ParticipationRequestStatus participationRequestStatus);
-
 }

@@ -2,10 +2,10 @@ package ru.practicum.explorewithme.main.events.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.explorewithme.main.events.model.Location;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -14,8 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode
-@ToString
 public class NewEventDto {
     @NotBlank
     @Size(min = 20, message = "{event.annotation.size.to.short}")
@@ -35,13 +33,14 @@ public class NewEventDto {
     private LocalDateTime eventDate;
 
     @NotNull
-    private Location location;
+    private LocationDto location;
 
-    private Boolean paid;
+    private boolean paid;
 
-    private Integer participantLimit;
+    @PositiveOrZero
+    private int participantLimit;
 
-    private Boolean requestModeration;
+    private boolean requestModeration;
 
     @NotBlank
     @Size(min = 3, message = "{event.title.size.to.short}")

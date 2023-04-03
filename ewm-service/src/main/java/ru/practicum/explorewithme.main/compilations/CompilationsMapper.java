@@ -10,16 +10,17 @@ import ru.practicum.explorewithme.main.events.EventsMapper;
 import ru.practicum.explorewithme.main.events.model.Event;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CompilationsMapper {
-    public static CompilationDto toCompilationDto(Compilation compilation, List<Event> events) {
+    public static CompilationDto toCompilationDto(Compilation compilation, List<Event> events, Map<Integer, Integer> eventViews) {
         return CompilationDto.builder()
                 .id(compilation.getId())
                 .pinned(compilation.isPinned())
                 .title(compilation.getTitle())
-                .events(events.stream().map(EventsMapper::toEventShortDto).collect(Collectors.toList()))
+                .events(events.stream().map(event -> EventsMapper.toEventShortDto(event, eventViews)).collect(Collectors.toList()))
                 .build();
     }
 
@@ -32,6 +33,7 @@ public class CompilationsMapper {
 
     public static void updateCompilation(UpdateCompilationDto updateCompilationDto, Compilation compilation) {
         compilation.setPinned(updateCompilationDto.isPinned() ? updateCompilationDto.isPinned() : compilation.isPinned());
-        compilation.setTitle(updateCompilationDto.getTitle() != null ? updateCompilationDto.getTitle() : compilation.getTitle());
+        compilation.setTitle(updateCompilationDto.getTitle() != null && !updateCompilationDto.getTitle().isBlank()
+                ? updateCompilationDto.getTitle() : compilation.getTitle());
     }
 }

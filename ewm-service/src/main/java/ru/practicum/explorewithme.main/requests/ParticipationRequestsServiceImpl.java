@@ -1,7 +1,7 @@
 package ru.practicum.explorewithme.main.requests;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explorewithme.main.dictionary.EventStatus;
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ParticipationRequestsServiceImpl implements ParticipationRequestsService {
 
@@ -28,16 +29,6 @@ public class ParticipationRequestsServiceImpl implements ParticipationRequestsSe
     private final UsersService usersService;
 
     private final EventsService eventsService;
-
-    @Autowired
-    public ParticipationRequestsServiceImpl(ParticipationRequestsRepository participationRequestsRepository,
-                                            UsersService usersService,
-                                            EventsService eventsService) {
-        this.participationRequestsRepository = participationRequestsRepository;
-        this.usersService = usersService;
-        this.eventsService = eventsService;
-    }
-
 
     @Override
     @Transactional

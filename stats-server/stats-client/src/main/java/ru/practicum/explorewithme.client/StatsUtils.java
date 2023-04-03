@@ -8,4 +8,6 @@ public class StatsUtils {
     public static final String HIT_ENDPOINT = "/hit";
     public static final String STATS_ENDPOINT = "/stats";
     static final String STATS_URL = "http://stats-server:9090";
+
+    //static final String STATS_URL = "http://localhost:9090";
 }

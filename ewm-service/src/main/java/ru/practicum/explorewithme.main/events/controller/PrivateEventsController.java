@@ -1,9 +1,8 @@
 package ru.practicum.explorewithme.main.events.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.main.events.EventsService;
 import ru.practicum.explorewithme.main.events.dto.*;
@@ -22,15 +21,10 @@ import static ru.practicum.explorewithme.main.param.PaginationParam.DEFAULT_STAR
  */
 @RestController
 @RequestMapping(path = "/users")
+@RequiredArgsConstructor
 @Slf4j
-@Validated
 public class PrivateEventsController {
     private final EventsService eventsService;
-
-    @Autowired
-    public PrivateEventsController(EventsService eventsService) {
-        this.eventsService = eventsService;
-    }
 
     @GetMapping("{userId}/events")
     public List<EventShortDto> getUserEvents(@PathVariable("userId") int userId,

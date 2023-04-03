@@ -1,10 +1,9 @@
 package ru.practicum.explorewithme.stats.stats;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.HitDto;
 import ru.practicum.explorewithme.dto.StatDto;
@@ -17,16 +16,10 @@ import java.util.List;
  *
  */
 @RestController
+@RequiredArgsConstructor
 @Slf4j
-@Validated
 public class StatsController {
     private final StatsService statsService;
-
-    @Autowired
-    public StatsController(StatsService statsService) {
-        this.statsService = statsService;
-    }
-
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)

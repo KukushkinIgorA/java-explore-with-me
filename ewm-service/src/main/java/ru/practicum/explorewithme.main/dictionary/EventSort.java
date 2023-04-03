@@ -14,7 +14,7 @@ public enum EventSort {
 
     public static Optional<EventSort> from(String eventSortString) {
         for (EventSort value : EventSort.values()) {
-            if (value.name().equals(eventSortString)) {
+            if (value.name().equalsIgnoreCase(eventSortString)) {
                 return Optional.of(value);
             }
         }

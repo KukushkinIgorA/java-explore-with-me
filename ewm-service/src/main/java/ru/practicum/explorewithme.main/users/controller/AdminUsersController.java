@@ -1,9 +1,8 @@
 package ru.practicum.explorewithme.main.users.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.main.users.UsersService;
 import ru.practicum.explorewithme.main.users.dto.UserDto;
@@ -21,15 +20,10 @@ import static ru.practicum.explorewithme.main.param.PaginationParam.DEFAULT_STAR
  */
 @RestController
 @RequestMapping(path = "/admin/users")
+@RequiredArgsConstructor
 @Slf4j
-@Validated
 public class AdminUsersController {
     private final UsersService usersService;
-
-    @Autowired
-    public AdminUsersController(UsersService usersService) {
-        this.usersService = usersService;
-    }
 
     @GetMapping()
     public List<UserDto> getUsers(@RequestParam(name = "ids", required = false) List<Integer> ids,

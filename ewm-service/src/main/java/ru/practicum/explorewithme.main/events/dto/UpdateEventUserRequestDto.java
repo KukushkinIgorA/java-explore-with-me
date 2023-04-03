@@ -3,7 +3,6 @@ package ru.practicum.explorewithme.main.events.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.explorewithme.main.dictionary.EventStateAction;
-import ru.practicum.explorewithme.main.events.model.Location;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -13,8 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode
-@ToString
 public class UpdateEventUserRequestDto {
 
     @Size(min = 20, message = "{event.annotation.size.to.short}")
@@ -29,13 +26,13 @@ public class UpdateEventUserRequestDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
-    private Location location;
+    private LocationDto location;
 
     private Boolean paid;
 
-    private Integer participantLimit;
+    private int participantLimit;
 
-    private Boolean requestModeration;
+    private boolean requestModeration;
 
     private EventStateAction stateAction;
 

@@ -10,8 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode
-@ToString
 public class EventRequestStatusUpdateRequest {
     private List<Integer> requestIds;
     private ParticipationRequestStatus status;

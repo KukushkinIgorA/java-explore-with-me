@@ -11,13 +11,16 @@ import ru.practicum.explorewithme.main.events.dto.EventShortDto;
 import ru.practicum.explorewithme.main.events.dto.NewEventDto;
 import ru.practicum.explorewithme.main.events.dto.UpdateEventUserRequestDto;
 import ru.practicum.explorewithme.main.events.model.Event;
+import ru.practicum.explorewithme.main.events.model.Location;
 import ru.practicum.explorewithme.main.exception.ForbiddenException;
 import ru.practicum.explorewithme.main.users.UsersMapper;
 import ru.practicum.explorewithme.main.users.model.User;
 
+import java.util.Map;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventsMapper {
-    public static EventShortDto toEventShortDto(Event event) {
+    public static EventShortDto toEventShortDto(Event event, Map<Integer, Integer> eventViews) {
         return EventShortDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -27,11 +30,11 @@ public class EventsMapper {
                 .initiator(UsersMapper.toUserShortDto(event.getInitiator()))
                 .paid(event.getPaid())
                 .title(event.getTitle())
-                .views(event.getViews())
+                .views(eventViews.getOrDefault(event.getId(), 0))
                 .build();
     }
 
-    public static EventFullDto toEventFullDto(Event event) {
+    public static EventFullDto toEventFullDto(Event event, Map<Integer, Integer> eventViews) {
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -41,35 +44,35 @@ public class EventsMapper {
                 .description(event.getDescription())
                 .eventDate(event.getEventDate())
                 .initiator(UsersMapper.toUserShortDto(event.getInitiator()))
-                .location(event.getLocation())
+                .location(LocationMapper.toLocationDto(event.getLocation()))
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
                 .publishedOn(event.getPublished())
-                .requestModeration(event.getRequestModeration())
+                .requestModeration(event.isRequestModeration())
                 .state(event.getState())
                 .title(event.getTitle())
-                .views(event.getViews())
+                .views(eventViews.getOrDefault(event.getId(), 0))
                 .build();
     }
 
-    public static Event toEvent(NewEventDto newEventDto, Category category, User user) {
+    public static Event toEvent(NewEventDto newEventDto, Category category, User user, Location location) {
         return Event.builder()
                 .annotation(newEventDto.getAnnotation())
                 .category(category)
                 .description(newEventDto.getDescription())
                 .eventDate(newEventDto.getEventDate())
                 .initiator(user)
-                .location(newEventDto.getLocation())
-                .paid(newEventDto.getPaid())
+                .location(location)
+                .paid(newEventDto.isPaid())
                 .participantLimit(newEventDto.getParticipantLimit())
-                .requestModeration(newEventDto.getRequestModeration())
+                .requestModeration(newEventDto.isRequestModeration())
                 .state(EventStatus.PENDING)
                 .title(newEventDto.getTitle())
                 .build();
     }
 
-    public static Event toUpdateUserEvent(UpdateEventUserRequestDto updateEventUserRequestDto, Category category, Event event) {
-        toUpdateEvent(updateEventUserRequestDto, category, event);
+    public static Event toUpdateUserEvent(UpdateEventUserRequestDto updateEventUserRequestDto, Category category, Event event, Location location) {
+        toUpdateEvent(updateEventUserRequestDto, category, event, location);
         if (updateEventUserRequestDto.getStateAction() != null && updateEventUserRequestDto.getStateAction().equals(EventStateAction.CANCEL_REVIEW)) {
             event.setState(EventStatus.CANCELED);
         } else if (updateEventUserRequestDto.getStateAction() != null && updateEventUserRequestDto.getStateAction().equals(EventStateAction.SEND_TO_REVIEW)) {
@@ -78,8 +81,8 @@ public class EventsMapper {
         return event;
     }
 
-    public static Event toUpdateAdminEvent(UpdateEventUserRequestDto updateEventUserRequestDto, Category category, Event event) {
-        toUpdateEvent(updateEventUserRequestDto, category, event);
+    public static Event toUpdateAdminEvent(UpdateEventUserRequestDto updateEventUserRequestDto, Category category, Event event, Location location) {
+        toUpdateEvent(updateEventUserRequestDto, category, event, location);
         if (updateEventUserRequestDto.getStateAction() != null && updateEventUserRequestDto.getStateAction().equals(EventStateAction.PUBLISH_EVENT)) {
             event.setState(EventStatus.PUBLISHED);
         } else if (updateEventUserRequestDto.getStateAction() != null && updateEventUserRequestDto.getStateAction().equals(EventStateAction.REJECT_EVENT)) {
@@ -91,24 +94,23 @@ public class EventsMapper {
         return event;
     }
 
-    private static void toUpdateEvent(UpdateEventUserRequestDto updateEventUserRequestDto, Category category, Event event) {
-        event.setAnnotation(updateEventUserRequestDto.getAnnotation() != null
+    private static void toUpdateEvent(UpdateEventUserRequestDto updateEventUserRequestDto, Category category, Event event, Location location) {
+        event.setAnnotation(updateEventUserRequestDto.getAnnotation() != null && !updateEventUserRequestDto.getAnnotation().isBlank()
                 ? updateEventUserRequestDto.getAnnotation() : event.getAnnotation());
         event.setCategory(category != null ? category : event.getCategory());
-        event.setDescription(updateEventUserRequestDto.getDescription() != null
+        event.setDescription(updateEventUserRequestDto.getDescription() != null && !updateEventUserRequestDto.getDescription().isBlank()
                 ? updateEventUserRequestDto.getDescription() : event.getDescription());
-
         event.setEventDate(updateEventUserRequestDto.getEventDate() != null
                 ? updateEventUserRequestDto.getEventDate() : event.getEventDate());
-        event.setLocation(updateEventUserRequestDto.getLocation() != null
-                ? updateEventUserRequestDto.getLocation() : event.getLocation());
+        event.setLocation(location != null
+                ? location : event.getLocation());
         event.setPaid(updateEventUserRequestDto.getPaid() != null
                 ? updateEventUserRequestDto.getPaid() : event.getPaid());
-        event.setParticipantLimit(updateEventUserRequestDto.getParticipantLimit() != null
+        event.setParticipantLimit(updateEventUserRequestDto.getParticipantLimit() != 0
                 ? updateEventUserRequestDto.getParticipantLimit() : event.getParticipantLimit());
-        event.setRequestModeration(updateEventUserRequestDto.getRequestModeration() != null
-                ? updateEventUserRequestDto.getRequestModeration() : event.getRequestModeration());
-        event.setTitle(updateEventUserRequestDto.getTitle() != null
+        event.setRequestModeration(updateEventUserRequestDto.isRequestModeration()
+                ? updateEventUserRequestDto.isRequestModeration() : event.isRequestModeration());
+        event.setTitle(updateEventUserRequestDto.getTitle() != null && !updateEventUserRequestDto.getTitle().isBlank()
                 ? updateEventUserRequestDto.getTitle() : event.getTitle());
     }
 }

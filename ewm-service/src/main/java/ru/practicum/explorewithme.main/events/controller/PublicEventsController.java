@@ -1,9 +1,8 @@
 package ru.practicum.explorewithme.main.events.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.main.dictionary.EventSort;
 import ru.practicum.explorewithme.main.events.EventsService;
@@ -24,15 +23,10 @@ import static ru.practicum.explorewithme.main.param.PaginationParam.DEFAULT_STAR
  */
 @RestController
 @RequestMapping(path = "/events")
+@RequiredArgsConstructor
 @Slf4j
-@Validated
 public class PublicEventsController {
     private final EventsService eventsService;
-
-    @Autowired
-    public PublicEventsController(EventsService eventsService) {
-        this.eventsService = eventsService;
-    }
 
     @GetMapping()
     public List<EventShortDto> getEventsPublicFilter(@RequestParam(name = "text", required = false) String text,
