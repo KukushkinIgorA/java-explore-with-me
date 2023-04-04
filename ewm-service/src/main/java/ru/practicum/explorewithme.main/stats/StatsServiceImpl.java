@@ -68,7 +68,7 @@ public class StatsServiceImpl implements StatsService {
                 .map(id -> ("/events/" + id))
                 .collect(Collectors.toList());
 
-        List<StatDto> stats = getStats(LocalDateTime.of(1970,1,1,0,0,0), LocalDateTime.now(), uris, null);
+        List<StatDto> stats = getStats(LocalDateTime.of(1970, 1, 1, 0, 0, 0), LocalDateTime.now(), uris, null);
         stats.forEach(stat -> {
             int eventId = Integer.parseInt(stat.getUri()
                     .split("/", 0)[2]);

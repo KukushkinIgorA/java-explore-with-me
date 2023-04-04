@@ -24,10 +24,11 @@ public class CompilationsMapper {
                 .build();
     }
 
-    public static Compilation toCompilation(NewCompilationDto newCompilationDto) {
+    public static Compilation toCompilation(NewCompilationDto newCompilationDto, List<Event> events) {
         return Compilation.builder()
                 .pinned(newCompilationDto.isPinned())
                 .title(newCompilationDto.getTitle())
+                .events(events)
                 .build();
     }
 

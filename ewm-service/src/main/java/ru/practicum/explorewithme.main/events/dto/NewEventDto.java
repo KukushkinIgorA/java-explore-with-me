@@ -3,6 +3,7 @@ package ru.practicum.explorewithme.main.events.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -33,6 +34,7 @@ public class NewEventDto {
     private LocalDateTime eventDate;
 
     @NotNull
+    @Valid
     private LocationDto location;
 
     private boolean paid;

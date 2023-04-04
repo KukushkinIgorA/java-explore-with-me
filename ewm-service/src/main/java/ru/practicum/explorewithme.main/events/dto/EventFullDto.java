@@ -6,7 +6,6 @@ import ru.practicum.explorewithme.main.categories.dto.CategoryDto;
 import ru.practicum.explorewithme.main.dictionary.EventStatus;
 import ru.practicum.explorewithme.main.users.dto.UserShortDto;
 
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,9 +15,6 @@ import java.time.LocalDateTime;
 @Builder
 public class EventFullDto {
     private int id;
-
-    @Size(min = 20, message = "{event.annotation.size.to.short}")
-    @Size(max = 2000, message = "{event.annotation.size.to.long}")
     private String annotation;
     private CategoryDto category;
     private int confirmedRequests;
@@ -26,8 +22,6 @@ public class EventFullDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn;
 
-    @Size(min = 20, message = "{event.description.size.to.short}")
-    @Size(max = 7000, message = "{event.description.size.to.long}")
     private String description;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -41,9 +35,6 @@ public class EventFullDto {
     private LocalDateTime publishedOn;
     private boolean requestModeration;
     private EventStatus state;
-
-    @Size(min = 3, message = "{event.title.size.to.short}")
-    @Size(max = 120, message = "{event.title.size.to.long}")
     private String title;
     private int views;
 }

@@ -106,10 +106,10 @@ public class EventsMapper {
                 ? location : event.getLocation());
         event.setPaid(updateEventUserRequestDto.getPaid() != null
                 ? updateEventUserRequestDto.getPaid() : event.getPaid());
-        event.setParticipantLimit(updateEventUserRequestDto.getParticipantLimit() != 0
+        event.setParticipantLimit(updateEventUserRequestDto.getParticipantLimit() != null
                 ? updateEventUserRequestDto.getParticipantLimit() : event.getParticipantLimit());
-        event.setRequestModeration(updateEventUserRequestDto.isRequestModeration()
-                ? updateEventUserRequestDto.isRequestModeration() : event.isRequestModeration());
+        event.setRequestModeration(updateEventUserRequestDto.getRequestModeration() != null
+                ? updateEventUserRequestDto.getRequestModeration() : event.isRequestModeration());
         event.setTitle(updateEventUserRequestDto.getTitle() != null && !updateEventUserRequestDto.getTitle().isBlank()
                 ? updateEventUserRequestDto.getTitle() : event.getTitle());
     }

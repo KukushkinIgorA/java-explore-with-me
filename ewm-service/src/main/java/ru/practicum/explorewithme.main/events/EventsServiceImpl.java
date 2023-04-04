@@ -60,7 +60,10 @@ public class EventsServiceImpl implements EventsService {
         User user = usersService.getValidUser(userId);
         Category category = categoriesService.getValidCategory(newEventDto.getCategory());
         validate(newEventDto.getEventDate());
-        Location location = locationRepository.save(LocationMapper.toLocation(newEventDto.getLocation()));
+        Location location = locationRepository.findLocationByLatAndLon(newEventDto.getLocation().getLat(), newEventDto.getLocation().getLon());
+        if (location == null) {
+            location = locationRepository.save(LocationMapper.toLocation(newEventDto.getLocation()));
+        }
         Event event = eventsRepository.save(EventsMapper.toEvent(newEventDto, category, user, location));
         Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
         return EventsMapper.toEventFullDto(event, eventViews);
@@ -101,7 +104,10 @@ public class EventsServiceImpl implements EventsService {
             category = categoriesService.getValidCategory(updateEventUserRequestDto.getCategory());
         }
         if (updateEventUserRequestDto.getLocation() != null) {
-            location = locationRepository.save(LocationMapper.toLocation(updateEventUserRequestDto.getLocation()));
+            location = locationRepository.findLocationByLatAndLon(updateEventUserRequestDto.getLocation().getLat(), updateEventUserRequestDto.getLocation().getLon());
+            if (location == null) {
+                location = locationRepository.save(LocationMapper.toLocation(updateEventUserRequestDto.getLocation()));
+            }
         }
         EventsMapper.toUpdateUserEvent(updateEventUserRequestDto, category, event, location);
         Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));

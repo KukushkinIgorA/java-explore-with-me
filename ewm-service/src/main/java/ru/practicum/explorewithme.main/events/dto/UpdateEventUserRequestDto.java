@@ -30,9 +30,9 @@ public class UpdateEventUserRequestDto {
 
     private Boolean paid;
 
-    private int participantLimit;
+    private Integer participantLimit;
 
-    private boolean requestModeration;
+    private Boolean requestModeration;
 
     private EventStateAction stateAction;
 

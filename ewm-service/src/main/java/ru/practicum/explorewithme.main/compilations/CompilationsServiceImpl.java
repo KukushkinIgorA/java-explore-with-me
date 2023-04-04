@@ -35,20 +35,13 @@ public class CompilationsServiceImpl implements CompilationsService {
     @Override
     @Transactional
     public CompilationDto create(NewCompilationDto newCompilationDto) {
-        Compilation compilation = compilationsRepository.save(CompilationsMapper.toCompilation(newCompilationDto));
-        List<Event> removeEvents = eventsRepository.findEventByCompilation_Id(compilation.getId());
-        if (!CollectionUtils.isEmpty(removeEvents)) {
-            for (Event removeEvent : removeEvents) {
-                removeEvent.setCompilation(null);
-            }
-        }
-        List<Event> events = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(newCompilationDto.getEvents())) {
+        List<Event> events;
+        if (newCompilationDto.getEvents() == null || newCompilationDto.getEvents().isEmpty()) {
+            events = new ArrayList<>();
+        } else {
             events = eventsRepository.findAllById(newCompilationDto.getEvents());
-            for (Event event : events) {
-                event.setCompilation(List.of(compilation));
-            }
         }
+        Compilation compilation = compilationsRepository.save(CompilationsMapper.toCompilation(newCompilationDto, events));
         Map<Integer, Integer> eventViews = statsService.getEventViews(events);
         return CompilationsMapper.toCompilationDto(compilation, events, eventViews);
     }
@@ -61,9 +54,7 @@ public class CompilationsServiceImpl implements CompilationsService {
         List<Event> events = new ArrayList<>();
         if (!CollectionUtils.isEmpty(updateCompilationDto.getEvents())) {
             events = eventsRepository.findAllById(updateCompilationDto.getEvents());
-            for (Event event : events) {
-                event.setCompilation(List.of(compilation));
-            }
+            compilation.setEvents(events);
         }
         Map<Integer, Integer> eventViews = statsService.getEventViews(events);
         return CompilationsMapper.toCompilationDto(compilation, events, eventViews);
