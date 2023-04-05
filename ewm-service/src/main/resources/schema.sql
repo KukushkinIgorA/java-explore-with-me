@@ -1,4 +1,4 @@
-drop table if exists users, categories, events, locations, requests, compilations, events_compilations;
+drop table if exists users, categories, events, locations, requests, compilations, events_compilations, comments;
 
 create table if not exists users
 (
@@ -33,8 +33,8 @@ create table if not exists compilations
     compilation_id integer generated always as identity
         constraint "pk_compilations"
             primary key,
-    pinned   boolean default false,
-    title    varchar(120)  not null
+    pinned         boolean default false,
+    title          varchar(120) not null
 );
 
 create table if not exists events
@@ -66,24 +66,41 @@ create table if not exists events
 create table if not exists events_compilations
 (
     event_id       integer
-    constraint events_null_fk
-    references events (event_id),
-    compilation_id       integer
-    constraint compilations_null_fk
-    references compilations (compilation_id)
+        constraint events_null_fk
+            references events (event_id),
+    compilation_id integer
+        constraint compilations_null_fk
+            references compilations (compilation_id)
 );
 
 create table if not exists requests
 (
-    request_id           integer generated always as identity
+    request_id   integer generated always as identity
         constraint "pk_requests"
             primary key,
-    created            timestamp without time zone not null,
-    event_id       integer
+    created      timestamp without time zone not null,
+    event_id     integer
         constraint requests_events_null_fk
             references events (event_id),
-    requester_id       integer
+    requester_id integer
         constraint requests_users_null_fk
             references users (user_id),
-    state              varchar(16)                 not null
+    state        varchar(16)                 not null
 );
+
+create table if not exists comments
+(
+    comment_id integer generated always as identity
+        constraint "pk_comments"
+            primary key,
+    created    timestamp without time zone not null,
+    updated    timestamp without time zone not null,
+    event_id   integer
+        constraint comments_events_null_fk
+            references events (event_id),
+    author_id  integer
+        constraint comments_users_null_fk
+            references users (user_id),
+    state      varchar(16)                 not null,
+    text       varchar(7000)               not null
+)
