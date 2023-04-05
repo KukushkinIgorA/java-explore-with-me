@@ -1,6 +1,9 @@
 # java-explore-with-me
 Template repository for ExploreWithMe project.
 
+# Ссылка на PR feature_comments
+https://github.com/KukushkinIgorA/java-explore-with-me/pull/6
+
 # Описание сторей для фичи комментарии:
 
 ## Private
