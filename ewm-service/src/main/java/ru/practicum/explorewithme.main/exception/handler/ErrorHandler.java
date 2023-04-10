@@ -37,7 +37,8 @@ public class ErrorHandler {
             MethodArgumentNotValidException.class,
             MethodArgumentTypeMismatchException.class,
             ConstraintViolationException.class,
-            MissingServletRequestParameterException.class})
+            MissingServletRequestParameterException.class,
+            IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleRuntimeException(Throwable e) {
         log.error("Ошибка bad request", e);

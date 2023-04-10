@@ -3,10 +3,12 @@ package ru.practicum.explorewithme.main.events.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.explorewithme.main.categories.dto.CategoryDto;
+import ru.practicum.explorewithme.main.comments.dto.CommentDto;
 import ru.practicum.explorewithme.main.dictionary.EventStatus;
 import ru.practicum.explorewithme.main.users.dto.UserShortDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -37,4 +39,5 @@ public class EventFullDto {
     private EventStatus state;
     private String title;
     private int views;
+    List<CommentDto> comments;
 }

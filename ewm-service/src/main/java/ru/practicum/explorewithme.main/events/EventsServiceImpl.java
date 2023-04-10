@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import ru.practicum.explorewithme.main.categories.CategoriesService;
 import ru.practicum.explorewithme.main.categories.model.Category;
+import ru.practicum.explorewithme.main.comments.CommentsRepository;
+import ru.practicum.explorewithme.main.comments.model.Comment;
+import ru.practicum.explorewithme.main.dictionary.CommentStatus;
 import ru.practicum.explorewithme.main.dictionary.EventSort;
 import ru.practicum.explorewithme.main.dictionary.EventStatus;
 import ru.practicum.explorewithme.main.dictionary.ParticipationRequestStatus;
@@ -29,6 +32,7 @@ import ru.practicum.explorewithme.main.users.model.User;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,6 +49,8 @@ public class EventsServiceImpl implements EventsService {
     private final CategoriesService categoriesService;
     private final ParticipationRequestsRepository participationRequestsRepository;
     private final StatsService statsService;
+
+    private final CommentsRepository commentsRepository;
 
     @Override
     public List<EventShortDto> getUserEvents(int userId, int from, int size) {
@@ -66,14 +72,14 @@ public class EventsServiceImpl implements EventsService {
         }
         Event event = eventsRepository.save(EventsMapper.toEvent(newEventDto, category, user, location));
         Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
-        return EventsMapper.toEventFullDto(event, eventViews);
+        return EventsMapper.toEventFullDto(event, eventViews, Collections.emptyList());
     }
 
     @Override
     public EventFullDto getUserEvent(int userId, int eventId) {
         Event event = getValidEvent(eventId, userId);
         Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
-        return EventsMapper.toEventFullDto(event, eventViews);
+        return EventsMapper.toEventFullDto(event, eventViews, Collections.emptyList());
     }
 
     @Override
@@ -82,9 +88,10 @@ public class EventsServiceImpl implements EventsService {
         if (!event.getState().equals(EventStatus.PUBLISHED)) {
             throw new NotFoundException(String.format("на сервере отстутствует событие c id = %s", eventId));
         }
+        List<Comment> comments = commentsRepository.findCommentByEvent_IdAndState(eventId, CommentStatus.PUBLISHED);
         statsService.addHit(httpServletRequest);
         Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
-        return EventsMapper.toEventFullDto(event, eventViews);
+        return EventsMapper.toEventFullDto(event, eventViews, comments);
     }
 
     @Override
@@ -111,7 +118,7 @@ public class EventsServiceImpl implements EventsService {
         }
         EventsMapper.toUpdateUserEvent(updateEventUserRequestDto, category, event, location);
         Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
-        return EventsMapper.toEventFullDto(event, eventViews);
+        return EventsMapper.toEventFullDto(event, eventViews, Collections.emptyList());
     }
 
     @Override
@@ -134,7 +141,7 @@ public class EventsServiceImpl implements EventsService {
         }
         EventsMapper.toUpdateAdminEvent(updateEventUserRequestDto, category, event, location);
         Map<Integer, Integer> eventViews = statsService.getEventViews(List.of(event));
-        return EventsMapper.toEventFullDto(event, eventViews);
+        return EventsMapper.toEventFullDto(event, eventViews, Collections.emptyList());
     }
 
 
@@ -153,7 +160,7 @@ public class EventsServiceImpl implements EventsService {
     public List<EventFullDto> getEventsAdminFilter(List<Integer> users, List<EventStatus> eventStatuses, List<Integer> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
         List<Event> events = eventsRepository.findEventsAdminFilter(users, eventStatuses, categories, rangeStart, rangeEnd, from, size);
         Map<Integer, Integer> eventViews = statsService.getEventViews(events);
-        return events.stream().map(event -> EventsMapper.toEventFullDto(event, eventViews)).collect(Collectors.toList());
+        return events.stream().map(event -> EventsMapper.toEventFullDto(event, eventViews, Collections.emptyList())).collect(Collectors.toList());
     }
 
 

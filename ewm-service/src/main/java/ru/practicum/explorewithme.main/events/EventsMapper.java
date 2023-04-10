@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.practicum.explorewithme.main.categories.CategoriesMapper;
 import ru.practicum.explorewithme.main.categories.model.Category;
+import ru.practicum.explorewithme.main.comments.CommentsMapper;
+import ru.practicum.explorewithme.main.comments.model.Comment;
 import ru.practicum.explorewithme.main.dictionary.EventStateAction;
 import ru.practicum.explorewithme.main.dictionary.EventStatus;
 import ru.practicum.explorewithme.main.events.dto.EventFullDto;
@@ -16,7 +18,9 @@ import ru.practicum.explorewithme.main.exception.ForbiddenException;
 import ru.practicum.explorewithme.main.users.UsersMapper;
 import ru.practicum.explorewithme.main.users.model.User;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class EventsMapper {
@@ -34,7 +38,7 @@ public class EventsMapper {
                 .build();
     }
 
-    public static EventFullDto toEventFullDto(Event event, Map<Integer, Integer> eventViews) {
+    public static EventFullDto toEventFullDto(Event event, Map<Integer, Integer> eventViews, List<Comment> comments) {
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -52,6 +56,7 @@ public class EventsMapper {
                 .state(event.getState())
                 .title(event.getTitle())
                 .views(eventViews.getOrDefault(event.getId(), 0))
+                .comments(comments.stream().map(CommentsMapper::toCommentDto).collect(Collectors.toList()))
                 .build();
     }
 
